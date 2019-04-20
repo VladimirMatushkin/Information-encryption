@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.IO;
+using System.Windows.Forms;
 
 // Class for decoding text based on a simple monoalphabetic substitution cipher
 namespace Encryption1
@@ -44,12 +45,12 @@ namespace Encryption1
         {
             string line;
 
-            using (StreamReader sr = new StreamReader(fileName))
+            using (StreamReader sr = new StreamReader(fileName, Encoding.GetEncoding("Windows-1251")))
                 while ((line = sr.ReadLine()) != null)
                 {
                     foreach (char c in line)
                     {
-                        if (HsAlphabet.Contains(c))
+                        if (HsAlphabet.Contains(c)) 
                         {
                             DctBaseFile[c]++;
                         }
@@ -61,7 +62,7 @@ namespace Encryption1
         {
             string line;
 
-            using (StreamReader sr = new StreamReader(fileName))
+            using (StreamReader sr = new StreamReader(fileName, Encoding.GetEncoding("Windows-1251")))
                 while ((line = sr.ReadLine()) != null)
                 {
                     EncodedText.Add(line);
