@@ -33,7 +33,9 @@
             this.btnSelectBaseFile = new System.Windows.Forms.Button();
             this.btnOpenEncryptedFile = new System.Windows.Forms.Button();
             this.tbEncryptedText = new System.Windows.Forms.TextBox();
-            this.btnAnalyzeBaseFile = new System.Windows.Forms.Button();
+            this.btnOpenBigramTable = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // tbBaseFile
@@ -58,7 +60,7 @@
             this.btnSelectBaseFile.TabIndex = 3;
             this.btnSelectBaseFile.Text = "Open base file";
             this.btnSelectBaseFile.UseVisualStyleBackColor = true;
-            this.btnSelectBaseFile.Click += new System.EventHandler(this.BtnSelectBaseFile_Click);
+            this.btnSelectBaseFile.Click += new System.EventHandler(this.BtnOpenBaseFile_Click);
             // 
             // btnOpenEncryptedFile
             // 
@@ -78,22 +80,43 @@
             this.tbEncryptedText.Size = new System.Drawing.Size(500, 388);
             this.tbEncryptedText.TabIndex = 5;
             // 
-            // btnAnalyzeBaseFile
+            // btnOpenBigramTable
             // 
-            this.btnAnalyzeBaseFile.Location = new System.Drawing.Point(344, 4);
-            this.btnAnalyzeBaseFile.Name = "btnAnalyzeBaseFile";
-            this.btnAnalyzeBaseFile.Size = new System.Drawing.Size(95, 23);
-            this.btnAnalyzeBaseFile.TabIndex = 6;
-            this.btnAnalyzeBaseFile.Text = "Analyze base file";
-            this.btnAnalyzeBaseFile.UseVisualStyleBackColor = true;
-            this.btnAnalyzeBaseFile.Click += new System.EventHandler(this.BtnAnalyzeBaseFile_Click);
+            this.btnOpenBigramTable.Enabled = false;
+            this.btnOpenBigramTable.Location = new System.Drawing.Point(334, 3);
+            this.btnOpenBigramTable.Name = "btnOpenBigramTable";
+            this.btnOpenBigramTable.Size = new System.Drawing.Size(103, 23);
+            this.btnOpenBigramTable.TabIndex = 8;
+            this.btnOpenBigramTable.Text = "Open bigram table";
+            this.btnOpenBigramTable.UseVisualStyleBackColor = true;
+            this.btnOpenBigramTable.Click += new System.EventHandler(this.BtnOpenBigramTable_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(604, 31);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 9;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.Button1_Click);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(549, 61);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(265, 388);
+            this.textBox1.TabIndex = 10;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(884, 461);
-            this.Controls.Add(this.btnAnalyzeBaseFile);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnOpenBigramTable);
             this.Controls.Add(this.tbEncryptedText);
             this.Controls.Add(this.btnOpenEncryptedFile);
             this.Controls.Add(this.btnSelectBaseFile);
@@ -113,7 +136,9 @@
         private System.Windows.Forms.Button btnSelectBaseFile;
         private System.Windows.Forms.Button btnOpenEncryptedFile;
         private System.Windows.Forms.TextBox tbEncryptedText;
-        private System.Windows.Forms.Button btnAnalyzeBaseFile;
+        private System.Windows.Forms.Button btnOpenBigramTable;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 

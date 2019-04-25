@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using System.Diagnostics;
+
 namespace Encryption4
 {
     public partial class MainForm : Form
@@ -18,13 +20,17 @@ namespace Encryption4
         }
 
         private OpenFileDialog openFileDialog = new OpenFileDialog();
-        private BruteForceSearch bfs = new BruteForceSearch(" АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ");
+        private BruteForceSearch bfs = new BruteForceSearch("АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ ");
 
-        private void BtnSelectBaseFile_Click(object sender, EventArgs e)
+        private void BtnOpenBaseFile_Click(object sender, EventArgs e)
         { 
             if(openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 tbBaseFile.Text = openFileDialog.FileName;
+                btnSelectBaseFile.Enabled = false;
+
+                bfs.AnalyzeBaseFile(tbBaseFile.Text);
+                btnOpenBigramTable.Enabled = true;
             }
         }
 
@@ -33,12 +39,23 @@ namespace Encryption4
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 tbEncryptedFile.Text = openFileDialog.FileName;
+                btnOpenEncryptedFile.Enabled = false;
+
+                bfs.AnalyzeEncryptedFile(tbEncryptedFile.Text);
+                bfs.EncryptedTextToTextBox(tbEncryptedText);
             }
         }
 
-        private void BtnAnalyzeBaseFile_Click(object sender, EventArgs e)
+        private void BtnOpenBigramTable_Click(object sender, EventArgs e)
         {
-            bfs.AnalyzeBaseFile(tbBaseFile.Text);
+            Process.Start(BruteForceSearch.CSVFileName);
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            bfs.BruteForce();
+            bfs.TopCiphersToTextBox(textBox1);
+            bfs.DecryptText();
         }
     }
 }
