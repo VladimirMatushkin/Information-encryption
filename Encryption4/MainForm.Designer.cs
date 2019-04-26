@@ -34,27 +34,29 @@
             this.btnOpenEncryptedFile = new System.Windows.Forms.Button();
             this.tbEncryptedText = new System.Windows.Forms.TextBox();
             this.btnOpenBigramTable = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.btnFindTopCiphers = new System.Windows.Forms.Button();
+            this.tbTopCiphers = new System.Windows.Forms.TextBox();
+            this.tbCipher = new System.Windows.Forms.TextBox();
+            this.btnDecryptText = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // tbBaseFile
             // 
             this.tbBaseFile.Location = new System.Drawing.Point(12, 6);
             this.tbBaseFile.Name = "tbBaseFile";
-            this.tbBaseFile.Size = new System.Drawing.Size(200, 20);
+            this.tbBaseFile.Size = new System.Drawing.Size(275, 20);
             this.tbBaseFile.TabIndex = 1;
             // 
             // tbEncryptedFile
             // 
             this.tbEncryptedFile.Location = new System.Drawing.Point(12, 34);
             this.tbEncryptedFile.Name = "tbEncryptedFile";
-            this.tbEncryptedFile.Size = new System.Drawing.Size(200, 20);
+            this.tbEncryptedFile.Size = new System.Drawing.Size(275, 20);
             this.tbEncryptedFile.TabIndex = 2;
             // 
             // btnSelectBaseFile
             // 
-            this.btnSelectBaseFile.Location = new System.Drawing.Point(218, 4);
+            this.btnSelectBaseFile.Location = new System.Drawing.Point(293, 3);
             this.btnSelectBaseFile.Name = "btnSelectBaseFile";
             this.btnSelectBaseFile.Size = new System.Drawing.Size(110, 23);
             this.btnSelectBaseFile.TabIndex = 3;
@@ -64,7 +66,7 @@
             // 
             // btnOpenEncryptedFile
             // 
-            this.btnOpenEncryptedFile.Location = new System.Drawing.Point(218, 31);
+            this.btnOpenEncryptedFile.Location = new System.Drawing.Point(293, 32);
             this.btnOpenEncryptedFile.Name = "btnOpenEncryptedFile";
             this.btnOpenEncryptedFile.Size = new System.Drawing.Size(110, 23);
             this.btnOpenEncryptedFile.TabIndex = 4;
@@ -77,13 +79,13 @@
             this.tbEncryptedText.Location = new System.Drawing.Point(12, 61);
             this.tbEncryptedText.Multiline = true;
             this.tbEncryptedText.Name = "tbEncryptedText";
-            this.tbEncryptedText.Size = new System.Drawing.Size(500, 388);
+            this.tbEncryptedText.Size = new System.Drawing.Size(589, 388);
             this.tbEncryptedText.TabIndex = 5;
             // 
             // btnOpenBigramTable
             // 
             this.btnOpenBigramTable.Enabled = false;
-            this.btnOpenBigramTable.Location = new System.Drawing.Point(334, 3);
+            this.btnOpenBigramTable.Location = new System.Drawing.Point(409, 3);
             this.btnOpenBigramTable.Name = "btnOpenBigramTable";
             this.btnOpenBigramTable.Size = new System.Drawing.Size(103, 23);
             this.btnOpenBigramTable.TabIndex = 8;
@@ -91,31 +93,50 @@
             this.btnOpenBigramTable.UseVisualStyleBackColor = true;
             this.btnOpenBigramTable.Click += new System.EventHandler(this.BtnOpenBigramTable_Click);
             // 
-            // button1
+            // btnFindTopCiphers
             // 
-            this.button1.Location = new System.Drawing.Point(604, 31);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 9;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.Button1_Click);
+            this.btnFindTopCiphers.Location = new System.Drawing.Point(607, 4);
+            this.btnFindTopCiphers.Name = "btnFindTopCiphers";
+            this.btnFindTopCiphers.Size = new System.Drawing.Size(107, 23);
+            this.btnFindTopCiphers.TabIndex = 9;
+            this.btnFindTopCiphers.Text = "Find top 10 ciphers";
+            this.btnFindTopCiphers.UseVisualStyleBackColor = true;
+            this.btnFindTopCiphers.Click += new System.EventHandler(this.BtnFindTopCiphers_Click);
             // 
-            // textBox1
+            // tbTopCiphers
             // 
-            this.textBox1.Location = new System.Drawing.Point(549, 61);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(265, 388);
-            this.textBox1.TabIndex = 10;
+            this.tbTopCiphers.Location = new System.Drawing.Point(607, 61);
+            this.tbTopCiphers.Multiline = true;
+            this.tbTopCiphers.Name = "tbTopCiphers";
+            this.tbTopCiphers.Size = new System.Drawing.Size(178, 207);
+            this.tbTopCiphers.TabIndex = 10;
+            // 
+            // tbCipher
+            // 
+            this.tbCipher.Location = new System.Drawing.Point(607, 291);
+            this.tbCipher.Name = "tbCipher";
+            this.tbCipher.Size = new System.Drawing.Size(48, 20);
+            this.tbCipher.TabIndex = 11;
+            // 
+            // btnDecryptText
+            // 
+            this.btnDecryptText.Location = new System.Drawing.Point(710, 289);
+            this.btnDecryptText.Name = "btnDecryptText";
+            this.btnDecryptText.Size = new System.Drawing.Size(75, 23);
+            this.btnDecryptText.TabIndex = 12;
+            this.btnDecryptText.Text = "Decrypt text";
+            this.btnDecryptText.UseVisualStyleBackColor = true;
+            this.btnDecryptText.Click += new System.EventHandler(this.BtnDecryptText_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 461);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(799, 461);
+            this.Controls.Add(this.btnDecryptText);
+            this.Controls.Add(this.tbCipher);
+            this.Controls.Add(this.tbTopCiphers);
+            this.Controls.Add(this.btnFindTopCiphers);
             this.Controls.Add(this.btnOpenBigramTable);
             this.Controls.Add(this.tbEncryptedText);
             this.Controls.Add(this.btnOpenEncryptedFile);
@@ -137,8 +158,10 @@
         private System.Windows.Forms.Button btnOpenEncryptedFile;
         private System.Windows.Forms.TextBox tbEncryptedText;
         private System.Windows.Forms.Button btnOpenBigramTable;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button btnFindTopCiphers;
+        private System.Windows.Forms.TextBox tbTopCiphers;
+        private System.Windows.Forms.TextBox tbCipher;
+        private System.Windows.Forms.Button btnDecryptText;
     }
 }
 

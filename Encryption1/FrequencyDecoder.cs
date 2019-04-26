@@ -97,6 +97,7 @@ namespace Encryption1
             foreach (string s in EncodedText)
             {
                 char rep;
+                // TODO: do not create new instance of StringBuilder every time 
                 StringBuilder sb = new StringBuilder(s);
                 for (int i = 0; i < sb.Length; i++)
                 {

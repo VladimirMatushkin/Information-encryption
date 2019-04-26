@@ -51,11 +51,15 @@ namespace Encryption4
             Process.Start(BruteForceSearch.CSVFileName);
         }
 
-        private void Button1_Click(object sender, EventArgs e)
+        private void BtnFindTopCiphers_Click(object sender, EventArgs e)
         {
             bfs.BruteForce();
-            bfs.TopCiphersToTextBox(textBox1);
-            bfs.DecryptText();
+            bfs.TopCiphersToTextBox(tbTopCiphers);
+        }
+
+        private void BtnDecryptText_Click(object sender, EventArgs e)
+        {
+            bfs.DecryptText(tbCipher.Text, tbEncryptedText);
         }
     }
 }
