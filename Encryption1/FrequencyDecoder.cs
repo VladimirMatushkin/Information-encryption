@@ -1,44 +1,73 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Collections.ObjectModel;
 using System.IO;
-using System.Windows.Forms;
+using System.Text;
 
-// Class for decoding text based on a simple monoalphabetic substitution cipher
+// Class for decryption text based on a simple monoalphabetic substitution cipher
 namespace Encryption1
 {
     class FrequencyDecoder
     {
-        private HashSet<char> HsAlphabet;
-        // char - symbol, uint - total symbol count 
-        private Dictionary<char, uint> DctBaseFile;
-        private Dictionary<char, uint> DctEncodedFile;
+        private readonly HashSet<char> _alphabet;
+        // char - symbol, uint - symbol count 
+        private readonly Dictionary<char, uint> _baseCharFrequency;
+        private readonly Dictionary<char, uint> _encryptedCharFrequency;
+        // matching encrypted symbol(key) to base symbol(value)
+        private readonly Dictionary<char, char> _symbolMapping;
 
         // total symbols count
-        private uint BaseCharCount = 0;
-        private uint EncodedCharCount = 0;
+        private uint _baseCharCount = 0;
+        private uint _encryptedCharCount = 0;
 
-        // match encoding char(key) to decoding char(value)
-        private Dictionary<char, char> DctCharMatching;
-
-        private List<string> EncodedText = new List<string>();
+        private List<string> _encryptedText = new List<string>(1);
 
         // TODO: add support for range, like A-Z
         public FrequencyDecoder(string alphabet)
         {
-            HsAlphabet = new HashSet<char>(alphabet);
-            InitializeDictionaries();
+            int sizeOfAlphabet = alphabet.Length;
+            _alphabet = new HashSet<char>(sizeOfAlphabet);
+            _baseCharFrequency = new Dictionary<char, uint>(sizeOfAlphabet);
+            _encryptedCharFrequency = new Dictionary<char, uint>(sizeOfAlphabet);
+            _symbolMapping = new Dictionary<char, char>(sizeOfAlphabet);
+
+            foreach (char key in alphabet)
+            {
+                _alphabet.Add(key);
+                _baseCharFrequency.Add(key, 0);
+                _encryptedCharFrequency.Add(key, 0);
+                _symbolMapping.Add(key, Char.MinValue);
+            }
         }
 
-        public void DecodedTextToTextBox(TextBox tb)
+        public ReadOnlyDictionary<char, uint> BaseCharFrequency
         {
-            foreach (string s in EncodedText)
-            {
-                tb.Text += s;
-            }
+            get { return new ReadOnlyDictionary<char, uint>(_baseCharFrequency); }
+        }
+
+        public ReadOnlyDictionary<char, uint> EncryptedCharFrequency
+        {
+            get { return new ReadOnlyDictionary<char, uint>(_encryptedCharFrequency); }
+        }
+
+        public Dictionary<char, char> SymbolMapping
+        {
+            get { return _symbolMapping; }
+        }
+
+        public uint BaseCharCount
+        {
+            get { return _baseCharCount; }
+        }
+
+        public uint EncryptedCharCount
+        {
+            get { return _encryptedCharCount; }
+        }
+
+        public ReadOnlyCollection<string> EncryptedText
+        {
+            get { return _encryptedText.AsReadOnly(); }
         }
 
         public void AnalyzeBaseFile(string fileName)
@@ -47,104 +76,33 @@ namespace Encryption1
 
             using (StreamReader sr = new StreamReader(fileName, Encoding.GetEncoding("Windows-1251")))
                 while ((line = sr.ReadLine()) != null)
-                {
                     foreach (char c in line)
-                    {
-                        if (HsAlphabet.Contains(c)) 
+                        if (_alphabet.Contains(c))
                         {
-                            DctBaseFile[c]++;
+                            _baseCharFrequency[c]++;
                         }
-                    }
-                }
+
+            foreach (uint symbolCount in _baseCharFrequency.Values)
+                _baseCharCount += symbolCount;
         }
 
-        public void AnalyzeEncodedFile(string fileName)
+        public void AnalyzeEncryptedFile(string fileName)
         {
             string line;
 
             using (StreamReader sr = new StreamReader(fileName, Encoding.GetEncoding("Windows-1251")))
                 while ((line = sr.ReadLine()) != null)
                 {
-                    EncodedText.Add(line);
+                    _encryptedText.Add(line);
                     foreach (char c in line)
-                    {
-                        if (HsAlphabet.Contains(c))
+                        if (_alphabet.Contains(c))
                         {
-                            DctEncodedFile[c]++;
+                            _encryptedCharFrequency[c]++;
                         }
-                    }
                 }
-        }
 
-        public void PopulateBaseDGV(DataGridView dgv)
-        {
-            PopulateDGV(dgv, DctBaseFile, BaseCharCount);
-        }
-
-        public void PopulateEncodedDGV(DataGridView dgv)
-        {
-            PopulateDGV(dgv, DctEncodedFile, EncodedCharCount);
-        }
-
-        public void DecodeText(DataGridView baseDgv, DataGridView encodedDgv, TextBox tb)
-        {
-            for (int i = 0; i < baseDgv.RowCount; i++)
-            {
-                DctCharMatching[(char)encodedDgv.Rows[i].Cells[0].Value] = (char)baseDgv.Rows[i].Cells[0].Value;
-            }
-
-            tb.Clear();
-            foreach (string s in EncodedText)
-            {
-                char rep;
-                // TODO: do not create new instance of StringBuilder every time 
-                StringBuilder sb = new StringBuilder(s);
-                for (int i = 0; i < sb.Length; i++)
-                {
-                    sb[i] = DctCharMatching.TryGetValue(sb[i], out rep) ? rep : sb[i];
-                }
-                tb.Text += sb.ToString();
-                sb = null;
-                //tb.AppendText(sb.ToString());
-                /*tb.AppendText(string.Join(string.Empty, s.Select(c =>
-                {
-                    char rep;
-                    return DctCharMatching.TryGetValue(c, out rep) ? rep : c;
-                })));*/
-            }
-        }
-
-        private void InitializeDictionaries()
-        {
-            DctBaseFile = new Dictionary<char, uint>(HsAlphabet.Count);
-            DctEncodedFile = new Dictionary<char, uint>(HsAlphabet.Count);
-            DctCharMatching = new Dictionary<char, char>(HsAlphabet.Count);
-
-            foreach (char key in HsAlphabet)
-            {
-                DctBaseFile.Add(key, 0);
-                DctEncodedFile.Add(key, 0);
-                DctCharMatching.Add(key, Char.MinValue);
-            }
-        }
-
-        private void PopulateDGV(DataGridView dgv, Dictionary<char, uint> dct, uint count)
-        {
-            int i = 0;
-
-            foreach (KeyValuePair<char, uint> kvp in dct)
-            {
-                dgv.Rows.Add();
-                dgv.Rows[i].Cells[0].Value = kvp.Key;
-                dgv.Rows[i].Cells[1].Value = kvp.Value;
-                count += kvp.Value;
-                i++;
-            }
-
-            foreach (DataGridViewRow row in dgv.Rows)
-            {
-                row.Cells[2].Value = (double)((uint)row.Cells[1].Value) / count;
-            }
+            foreach (uint symbolCount in _encryptedCharFrequency.Values)
+                _encryptedCharCount += symbolCount;
         }
     }
 }

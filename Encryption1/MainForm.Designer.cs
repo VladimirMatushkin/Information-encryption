@@ -34,16 +34,16 @@
             this.btnOpenEncryptedFile = new System.Windows.Forms.Button();
             this.tbEncryptedText = new System.Windows.Forms.TextBox();
             this.dgvBaseFrequency = new System.Windows.Forms.DataGridView();
-            this.dgvEncryptedFrequency = new System.Windows.Forms.DataGridView();
-            this.btnAnalyzeFiles = new System.Windows.Forms.Button();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgvEncryptedFrequency = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnDecryptText = new System.Windows.Forms.Button();
             this.btnSaveCipher = new System.Windows.Forms.Button();
+            this.btnAnalyzeFiles = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBaseFrequency)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEncryptedFrequency)).BeginInit();
             this.SuspendLayout();
@@ -109,34 +109,6 @@
             this.dgvBaseFrequency.TabIndex = 5;
             this.dgvBaseFrequency.Scroll += new System.Windows.Forms.ScrollEventHandler(this.DgvBaseFrequency_Scroll);
             // 
-            // dgvEncryptedFrequency
-            // 
-            this.dgvEncryptedFrequency.AllowUserToAddRows = false;
-            this.dgvEncryptedFrequency.AllowUserToDeleteRows = false;
-            this.dgvEncryptedFrequency.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvEncryptedFrequency.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn1,
-            this.dataGridViewTextBoxColumn2,
-            this.dataGridViewTextBoxColumn3});
-            this.dgvEncryptedFrequency.Location = new System.Drawing.Point(744, 25);
-            this.dgvEncryptedFrequency.Name = "dgvEncryptedFrequency";
-            this.dgvEncryptedFrequency.ReadOnly = true;
-            this.dgvEncryptedFrequency.RowHeadersVisible = false;
-            this.dgvEncryptedFrequency.Size = new System.Drawing.Size(200, 427);
-            this.dgvEncryptedFrequency.TabIndex = 6;
-            this.dgvEncryptedFrequency.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DgvEncryptedFrequency_CellMouseClick);
-            this.dgvEncryptedFrequency.Scroll += new System.Windows.Forms.ScrollEventHandler(this.DgvEncryptedFrequency_Scroll);
-            // 
-            // btnAnalyzeFiles
-            // 
-            this.btnAnalyzeFiles.Location = new System.Drawing.Point(531, 458);
-            this.btnAnalyzeFiles.Name = "btnAnalyzeFiles";
-            this.btnAnalyzeFiles.Size = new System.Drawing.Size(75, 23);
-            this.btnAnalyzeFiles.TabIndex = 7;
-            this.btnAnalyzeFiles.Text = "Analyze files";
-            this.btnAnalyzeFiles.UseVisualStyleBackColor = true;
-            this.btnAnalyzeFiles.Click += new System.EventHandler(this.BtnAnalyzeFiles_Click);
-            // 
             // Column1
             // 
             this.Column1.HeaderText = "Symbol";
@@ -160,6 +132,24 @@
             this.Column3.ReadOnly = true;
             this.Column3.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.Column3.Width = 80;
+            // 
+            // dgvEncryptedFrequency
+            // 
+            this.dgvEncryptedFrequency.AllowUserToAddRows = false;
+            this.dgvEncryptedFrequency.AllowUserToDeleteRows = false;
+            this.dgvEncryptedFrequency.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvEncryptedFrequency.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewTextBoxColumn1,
+            this.dataGridViewTextBoxColumn2,
+            this.dataGridViewTextBoxColumn3});
+            this.dgvEncryptedFrequency.Location = new System.Drawing.Point(744, 25);
+            this.dgvEncryptedFrequency.Name = "dgvEncryptedFrequency";
+            this.dgvEncryptedFrequency.ReadOnly = true;
+            this.dgvEncryptedFrequency.RowHeadersVisible = false;
+            this.dgvEncryptedFrequency.Size = new System.Drawing.Size(200, 427);
+            this.dgvEncryptedFrequency.TabIndex = 6;
+            this.dgvEncryptedFrequency.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DgvEncryptedFrequency_CellMouseClick);
+            this.dgvEncryptedFrequency.Scroll += new System.Windows.Forms.ScrollEventHandler(this.DgvEncryptedFrequency_Scroll);
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -187,6 +177,7 @@
             // 
             // btnDecryptText
             // 
+            this.btnDecryptText.Enabled = false;
             this.btnDecryptText.Location = new System.Drawing.Point(627, 458);
             this.btnDecryptText.Name = "btnDecryptText";
             this.btnDecryptText.Size = new System.Drawing.Size(75, 23);
@@ -197,6 +188,7 @@
             // 
             // btnSaveCipher
             // 
+            this.btnSaveCipher.Enabled = false;
             this.btnSaveCipher.Location = new System.Drawing.Point(718, 458);
             this.btnSaveCipher.Name = "btnSaveCipher";
             this.btnSaveCipher.Size = new System.Drawing.Size(75, 23);
@@ -205,14 +197,25 @@
             this.btnSaveCipher.UseVisualStyleBackColor = true;
             this.btnSaveCipher.Click += new System.EventHandler(this.BtnSaveCipher_Click);
             // 
+            // btnAnalyzeFiles
+            // 
+            this.btnAnalyzeFiles.Enabled = false;
+            this.btnAnalyzeFiles.Location = new System.Drawing.Point(532, 458);
+            this.btnAnalyzeFiles.Name = "btnAnalyzeFiles";
+            this.btnAnalyzeFiles.Size = new System.Drawing.Size(75, 23);
+            this.btnAnalyzeFiles.TabIndex = 7;
+            this.btnAnalyzeFiles.Text = "Analyze files";
+            this.btnAnalyzeFiles.UseVisualStyleBackColor = true;
+            this.btnAnalyzeFiles.Click += new System.EventHandler(this.BtnAnalyzeFiles_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(966, 490);
+            this.Controls.Add(this.btnAnalyzeFiles);
             this.Controls.Add(this.btnSaveCipher);
             this.Controls.Add(this.btnDecryptText);
-            this.Controls.Add(this.btnAnalyzeFiles);
             this.Controls.Add(this.dgvEncryptedFrequency);
             this.Controls.Add(this.dgvBaseFrequency);
             this.Controls.Add(this.tbEncryptedText);
@@ -238,7 +241,6 @@
         private System.Windows.Forms.TextBox tbEncryptedText;
         private System.Windows.Forms.DataGridView dgvBaseFrequency;
         private System.Windows.Forms.DataGridView dgvEncryptedFrequency;
-        private System.Windows.Forms.Button btnAnalyzeFiles;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
@@ -247,6 +249,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
         private System.Windows.Forms.Button btnDecryptText;
         private System.Windows.Forms.Button btnSaveCipher;
+        private System.Windows.Forms.Button btnAnalyzeFiles;
     }
 }
 
