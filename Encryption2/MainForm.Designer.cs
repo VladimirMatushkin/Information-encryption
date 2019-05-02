@@ -59,6 +59,7 @@
             // 
             // btnDecrypt
             // 
+            this.btnDecrypt.Enabled = false;
             this.btnDecrypt.Location = new System.Drawing.Point(674, 12);
             this.btnDecrypt.Name = "btnDecrypt";
             this.btnDecrypt.Size = new System.Drawing.Size(54, 23);

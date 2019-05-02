@@ -1,67 +1,86 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-
-using System.IO;
-using System.Windows.Forms;
-using System.Drawing;
-using System.Diagnostics;
 
 namespace Encryption2
 {
     class Vigenere
     {
-        private HashSet<char> HsAlphabet;
+        private readonly HashSet<char> _alphabet;
 
-        private double[] IndexOfCoincidence;
+        private double[] _indexOfCoincidence;
         // this dictionaries need for shifting letters according to vigenere cipher
-        private Dictionary<char, int> DctCharToIndex;
-        private Dictionary<int, char> DctIndexToChar;
-        private int[] shift;
+        private readonly Dictionary<char, int> _symbolToIndex;
+        private readonly Dictionary<int, char> _indexToSymbol;
+        // difference between base and encrypted symbol
+        private int[] _shift;
 
-        private string EncryptedText;
+        private string _encryptedText;
+        private StringBuilder _decryptedText;
 
         public Vigenere(string alphabet)
         {
-            HsAlphabet = new HashSet<char>(alphabet);
+            int sizeOfAlphabet = alphabet.Length;
+            _alphabet = new HashSet<char>(sizeOfAlphabet);
+            _symbolToIndex = new Dictionary<char, int>(sizeOfAlphabet);
+            _indexToSymbol = new Dictionary<int, char>(sizeOfAlphabet);
+
             int index = 0;
-            DctCharToIndex = alphabet.ToDictionary(k => k, v => index++);
-            DctIndexToChar = DctCharToIndex.ToDictionary(k => k.Value, k => k.Key);
+            foreach (char key in alphabet)
+            {
+                _alphabet.Add(key);
+                _symbolToIndex.Add(key, index);
+                _indexToSymbol.Add(index, key);
+                index++;
+            }
+        }
+
+        public ReadOnlyCollection<double> IndexOfCoincedence
+        {
+            get { return Array.AsReadOnly<double>(_indexOfCoincidence); }
+        }
+
+        public string EncryptedText
+        {
+            get { return _encryptedText; }
+        }
+
+        public string DecryptedText
+        {
+            get { return _decryptedText.ToString(); }
         }
 
         public void ReadEncryptedFile(string fileName)
         {
             using (StreamReader sr = new StreamReader(fileName, Encoding.GetEncoding("Windows-1251")))
-                EncryptedText = sr.ReadToEnd();
-        }
+                _encryptedText = sr.ReadToEnd();
 
-        public void EncryptedTextToTextBox(TextBox tb)
-        {
-            tb.Text += EncryptedText;
+            _decryptedText = new StringBuilder(_encryptedText.Length);
         }
 
         public void CalculateIndexOfCoincedence(int minKeyLength, int maxKeyLength)
         {
-            Dictionary<char, int> symbolsCount = HsAlphabet.ToDictionary(k => k, k => 0);
-            IndexOfCoincidence = new double[maxKeyLength - minKeyLength + 1];
+            Dictionary<char, int> symbolsCount = _alphabet.ToDictionary(k => k, k => 0);
+            _indexOfCoincidence = new double[maxKeyLength - minKeyLength + 1];
             int indexCounter = -1;
 
             for (int keyLength = minKeyLength; keyLength <= maxKeyLength; keyLength++)
             {
-                IndexOfCoincidence[++indexCounter] = 0;
+                _indexOfCoincidence[++indexCounter] = 0;
 
                 for (int k = 0; k < keyLength; k++)
                 {
                     int totalSymbols = 0;
                     int sum = 0;
-                    for (int i = k; i < EncryptedText.Length - keyLength; i += keyLength)
+                    for (int i = k; i < _encryptedText.Length - keyLength; i += keyLength)
                     {
-                        symbolsCount[EncryptedText[i]]++;
+                        symbolsCount[_encryptedText[i]]++;
                     }
 
-                    foreach (char symbol in HsAlphabet)
+                    foreach (char symbol in _alphabet)
                     {
                         int symbolCount = symbolsCount[symbol];
                         sum += symbolCount * (symbolCount - 1);
@@ -69,58 +88,47 @@ namespace Encryption2
                         symbolsCount[symbol] = 0;
                     }
 
-                    IndexOfCoincidence[indexCounter] += (double)sum / (totalSymbols * (totalSymbols - 1));
+                    _indexOfCoincidence[indexCounter] += (double)sum / (totalSymbols * (totalSymbols - 1));
                 }
-                IndexOfCoincidence[indexCounter] /= keyLength;
+                _indexOfCoincidence[indexCounter] /= keyLength;
             }
         }
 
-        public void PopulateDGV(DataGridView dgv, int minKeyLength)
+        public void DecryptText(int keyLength)
         {
-            for (int i = 0; i < IndexOfCoincidence.Length; i++)
-            {
-                DataGridViewRow row = new DataGridViewRow();
-                dgv.Rows.Add();
-                dgv.Rows[i].Cells[0].Value = minKeyLength++;
-                dgv.Rows[i].Cells[1].Value = IndexOfCoincidence[i];
-                if (IndexOfCoincidence[i] > 0.05)
-                {
-                    dgv.Rows[i].DefaultCellStyle.BackColor = Color.Aqua;
-                }
-            }
-        }
+            Dictionary<char, int> symbolsCount = _alphabet.ToDictionary(k => k, k => 0);
+            _shift = new int[keyLength];
+            int spaceIndex = _symbolToIndex[' '];
 
-        public void DecryptText(int keyLength, TextBox tb)
-        {
-            Dictionary<char, int> symbolsCount = HsAlphabet.ToDictionary(k => k, k => 0);
-            shift = new int[keyLength];
-            int spaceIndex = DctCharToIndex[' '];
-            // find shifts
+            // Find shifts
             for (int k = 0; k < keyLength; k++)
             {
-                foreach (char key in HsAlphabet)
+                foreach (char key in _alphabet)
                 {
                     symbolsCount[key] = 0;
                 }
-                // count symbols
-                for (int i = k; i < EncryptedText.Length - keyLength; i += keyLength)
+                // Count symbols
+                for (int i = k; i < _encryptedText.Length - keyLength; i += keyLength)
                 {
-                    symbolsCount[EncryptedText[i]]++;
+                    symbolsCount[_encryptedText[i]]++;
                 }
-                // find most occurrence symbol that will be 'space' character
+                // Find most occurrence symbol that will be 'space' character
                 char encryptedSpace = symbolsCount.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
-                shift[k] = spaceIndex - DctCharToIndex[encryptedSpace];
-                Debug.Print(shift[k] + "\n");
+                _shift[k] = spaceIndex - _symbolToIndex[encryptedSpace];
             }
-            // dectypt text
-            int sizeOfAlphabet = HsAlphabet.Count;
-            tb.Clear();
-            StringBuilder sb = new StringBuilder(EncryptedText.Length);
-            for (int i = 0; i < EncryptedText.Length; i++)
+
+            // Decrypt text
+            int sizeOfAlphabet = _alphabet.Count;
+            _decryptedText.Length = 0;
+            for (int i = 0; i < _encryptedText.Length; i++)
             {
-                sb.Append(DctIndexToChar[(DctCharToIndex[EncryptedText[i]] + shift[i % keyLength]) % sizeOfAlphabet]);
+                int indexOfEncryptedSymbol = _symbolToIndex[_encryptedText[i]];
+                int indexOfDecryptedSymbol = (indexOfEncryptedSymbol + _shift[i % keyLength]);
+                if (indexOfDecryptedSymbol < 0)
+                    indexOfDecryptedSymbol += sizeOfAlphabet;
+                char decryptedSymbol = _indexToSymbol[indexOfDecryptedSymbol % sizeOfAlphabet];
+                _decryptedText.Append(decryptedSymbol);
             }
-            tb.AppendText(sb.ToString());
         }
     }
 }
