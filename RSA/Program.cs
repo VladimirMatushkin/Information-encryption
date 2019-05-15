@@ -24,9 +24,6 @@ namespace RSA
                 //𝑑 = 𝑒^(−1) mod 𝜙(𝑛)
                 long d = InverseModulo(e, phi);
 
-                Console.WriteLine($"p = {p}\nq = {q}");
-                Console.WriteLine($"phi = {phi}\nd = {d}");
-
                 sr.ReadLine();
 
                 using (StreamWriter sw = new StreamWriter("decrypted.txt", false, Encoding.GetEncoding("Windows-1251")))
