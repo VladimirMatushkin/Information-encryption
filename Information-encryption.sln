@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Encryption4", "Encryption4\Encryption4.csproj", "{784CE26D-D4D4-4C6E-8D41-D5F508720170}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BruteForceAttack", "BruteForceAttack\BruteForceAttack.csproj", "{784CE26D-D4D4-4C6E-8D41-D5F508720170}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Encryption1", "Encryption1\Encryption1.csproj", "{D8DFA14B-7C57-4846-87B6-52955FE7AF60}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoalphabeticCipher", "MonoalphabeticCipher\MonoalphabeticCipher.csproj", "{D8DFA14B-7C57-4846-87B6-52955FE7AF60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Encryption2", "Encryption2\Encryption2.csproj", "{C155B2AC-0832-4EB3-8BB2-C97DDF85F603}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyalphabeticCipher", "PolyalphabeticCipher\PolyalphabeticCipher.csproj", "{C155B2AC-0832-4EB3-8BB2-C97DDF85F603}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SHA1_Collisions", "SHA1_Collisions\SHA1_Collisions.csproj", "{1DE09D26-4D2A-454D-BBF0-4EBF0CCF4CD7}"
 EndProject
@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimalityTests", "Primality
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegendreSymbol", "LegendreSymbol\LegendreSymbol.csproj", "{56EF3FE8-0490-4338-AD18-64AC08091C2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElGamalDecryptor", "ElGamalDecryptor\ElGamalDecryptor.csproj", "{0FD5E26D-398E-4DBE-82BF-83B496E5B5A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElGamal", "ElGamal\ElGamal.csproj", "{0FD5E26D-398E-4DBE-82BF-83B496E5B5A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSA", "RSA\RSA.csproj", "{BD8C8FC0-F1CA-4F3A-9491-A5735A71C943}"
 EndProject
