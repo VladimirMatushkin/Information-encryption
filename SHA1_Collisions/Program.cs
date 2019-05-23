@@ -1,27 +1,193 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
 using System.IO;
-using System.Security.Cryptography;
-//Console.WriteLine(Encoding.Default.GetString(value));
+using System.Collections.Generic;
 
 namespace SHA1_Collisions
 {
     class Program
     {
-        const int MessageLength = 194;
-        const int BytesToSave = 6;
-        static Random random = new Random();
+        private const int MessageLength = 194;
+        private const int BytesToSave = 6;
+
+        //static Random random = new Random(1315410023);
+        private static XorShiftRandom randomFast = new XorShiftRandom();
+        private static byte[] salt = new byte[128];
+
+        // For comparing bits
+        private static byte[] bits = { 1, 2, 4, 8, 16, 32, 64, 128 };
+
+        /*
+        static void RandomSalt(byte[] msg)
+        {
+            random.NextBytes(salt);
+            for (int i = 66; i < MessageLength; i++)
+            {
+                msg[i] = (byte)((int)salt[i - 66] % 10 + 48);
+            }
+        }
+        */
+
+        static void Main(string[] args)
+        {
+            byte[] message1 = new byte[MessageLength];
+            byte[] message2 = new byte[MessageLength];
+            byte[] hash1 = new byte[20];
+            byte[] hash2 = new byte[20];
+
+            // Read messages
+            using (FileStream fs = new FileStream("msg.txt", FileMode.Open))
+            {
+                fs.Read(message1, 0, MessageLength);
+                fs.Read(message2, 0, MessageLength);
+            }
+
+            CustomSHA1 customSHA1 = new CustomSHA1();
+            //using (SHA1Cng sha = new SHA1Cng())
+
+            Console.WriteLine("-----First preimage resistance:-----");
+
+            customSHA1.ComputeHash(message1, hash1);
+
+            // Find hash2 == hash1
+            // Hashes are equal if first 'i' bits of them are equal 
+            for (int i = 1; i <= 24; i++)
+            {
+                int cycleCount = 0;
+                bool fl = true;
+
+                while (fl)
+                {
+                    cycleCount++;
+
+                    RandomSalt(message2);
+                    customSHA1.ComputeHash(message2, hash2);
+
+                    fl = CompareHashes(i, hash1, hash2);
+                }
+
+                Console.WriteLine($"{i} bit: {cycleCount} cycles");
+            }
+
+            Console.WriteLine("-----Second preimage resistance:-----");
+
+            byte[][] secondHashes = new byte[1000000][];
+            for (int i = 0; i < 1000000; i++)
+            {
+                secondHashes[i] = new byte[BytesToSave];
+            }
+
+            for (int i = 1; i <= 29; i++)
+            {
+                int cycleCount = 0;
+                bool fl = true;
+
+                RandomSalt(message2);
+                customSHA1.ComputeHash(message1, hash1);
+                customSHA1.ComputeHash(message2, hash2);
+                for (int k = 0; k < BytesToSave; k++)
+                {
+                    secondHashes[cycleCount][k] = hash2[k];
+                }
+
+                while (fl)
+                {
+                    RandomSalt(message1);
+                    RandomSalt(message2);
+                    customSHA1.ComputeHash(message1, hash1);
+                    customSHA1.ComputeHash(message2, hash2);
+
+                    cycleCount++;
+                    for (int q = 0; q < cycleCount; q++)
+                    {
+                        if (!CompareHashes(i, secondHashes[q], hash1) || !CompareHashes(i, secondHashes[q], hash2))
+                        {
+                            fl = false;
+                            break;
+                        }
+                    }
+
+                    for (int k = 0; k < BytesToSave; k++)
+                    {
+                        secondHashes[cycleCount][k] = hash2[k];
+                    }
+                }
+
+                Console.WriteLine($"{i} bit: {cycleCount} cycles");
+            }
+
+            Dictionary<long, List<byte>> dctSecondHashes = new Dictionary<long, List<byte>>(17000000);
+
+            for (int i = 30; i <= 48; i++)
+            {
+                int cycleCount = 0;
+                bool fl = true;
+
+                RandomSalt(message2);
+                customSHA1.ComputeHash(message1, hash1);
+                customSHA1.ComputeHash(message2, hash2);
+
+                int amountOfBytes = i / 8;
+                long message1Key;
+                long message2Key = BytesToLong(hash2, amountOfBytes);
+                dctSecondHashes.Add(message2Key, new List<byte>(10));
+
+                int amountOfBits = i % 8;
+                if (amountOfBits != 0)
+                    dctSecondHashes[message2Key].Add(hash2[amountOfBytes]);
+
+                while (fl)
+                {
+                    cycleCount++;
+
+                    RandomSalt(message1);
+                    RandomSalt(message2);
+                    customSHA1.ComputeHash(message1, hash1);
+                    customSHA1.ComputeHash(message2, hash2);
+
+                    message1Key = BytesToLong(hash1, amountOfBytes);
+                    message2Key = BytesToLong(hash2, amountOfBytes);
+
+                    if (dctSecondHashes.ContainsKey(message1Key))
+                    {
+                        if (amountOfBits == 0)
+                        {
+                            break;
+                        }
+
+                        fl = CompareBytes(dctSecondHashes[message1Key], hash1[amountOfBytes], amountOfBits, amountOfBytes);
+                        if (fl == false) break;
+                    }
+
+                    if (dctSecondHashes.ContainsKey(message2Key))
+                    {
+                        if (amountOfBits == 0)
+                        {
+                            break;
+                        }
+
+                        fl = CompareBytes(dctSecondHashes[message2Key], hash2[amountOfBytes], amountOfBits, amountOfBytes);
+                        if (fl == false) break;
+                    }
+
+                    if (dctSecondHashes.ContainsKey(message2Key) == false)
+                        dctSecondHashes.Add(message2Key, new List<byte>(10));
+                    if (amountOfBits != 0)
+                        dctSecondHashes[message2Key].Add(hash2[amountOfBytes]);
+                }
+
+                Console.WriteLine($"{i} bit: {cycleCount} cycles");
+                dctSecondHashes.Clear();
+
+            }
+        }
 
         static void RandomSalt(byte[] msg)
         {
+            randomFast.NextBytes(salt);
+
             for (int i = 66; i < MessageLength; i++)
             {
-                msg[i] = (byte)(random.Next(0, 10) + '0');
+                msg[i] = (byte)((int)salt[i - 66] % 10 + 48);
             }
         }
 
@@ -30,125 +196,53 @@ namespace SHA1_Collisions
         {
             int byteIndex = 0;
             int bit = 1;
-            for (int j = 0; j < numberOfBits; j++)
-            {
-                if ((hash1[byteIndex] & bit) != (hash2[byteIndex] & bit))
-                { 
+
+            byteIndex = numberOfBits / 8;
+            for (int i = 0; i < byteIndex; i++)
+                if (hash1[i] != hash2[i])
                     return true;
-                }
-                if (j % 8 == 7)
-                {
-                    byteIndex++;
-                    bit = 1;
-                }
-                else bit <<= 1;
-            }
+
+            bit = numberOfBits % 8;
+            for (int i = 0; i < bit; i++)
+                if ((hash1[byteIndex] & bits[i]) != (hash2[byteIndex] & bits[i]))
+                    return true;
+
             return false;
-            //for (int j = 0; j <= i / 8; j++)
-            //    for (int bit = 1; bit <= 128; bit <<= 1)
-            //    {
-            //        if ((hash1[j] & bit) != (hash2[j] & bit))
-            //        {
-            //            fl = true;
-            //            return;
-            //        }
-            //    }
         }
 
-        static void Main(string[] args)
+        // Pack amountOfBytes to long
+        static long BytesToLong(byte[] bytes, int amountOfBytes)
         {
-            byte[] message1 = new byte[MessageLength];
-            byte[] message2 = new byte[MessageLength];
-            byte[] hash1;
-            byte[] hash2;
-
-            using (FileStream fs = new FileStream("msg.txt", FileMode.Open))
+            long result = 0;
+            for(int i = 0; i < amountOfBytes;i++)
             {
-                fs.Read(message1, 0, MessageLength);
-                fs.Read(message2, 0, MessageLength);
+                result <<= 8;
+                result += bytes[i];
             }
-
-            using (SHA1 sha = new SHA1CryptoServiceProvider())
-            {
-                Console.WriteLine("-----First preimage resistance:-----");
-                hash1 = sha.ComputeHash(message1);
-
-                for (int i = 1; i <= 24; i++)
-                {
-                    int cycleCount = 0;
-                    bool fl = true;
-
-                    while (fl)
-                    {
-                        cycleCount++;
-                        RandomSalt(message2);
-                        hash2 = sha.ComputeHash(message2);
-
-                        fl = CompareHashes(i, hash1, hash2);
-                    }
-
-                    Console.WriteLine($"{i} bit: {cycleCount} cycles");
-                }
-
-                byte[][] firstHashes = new byte[1000000][];
-                byte[][] secondHashes = new byte[1000000][];
-                for (int i = 0; i < 1000000; i++)
-                {
-                    firstHashes[i] = new byte[BytesToSave];
-                    secondHashes[i] = new byte[BytesToSave];
-                }
-
-                TaskFactory taskFactory = new TaskFactory();
-
-                Console.WriteLine("-----Second preimage resistance-----");
-                for (int i = 1; i <= 48; i++)
-                {
-                    int cycleCount = 0;
-                    bool fl = true;
-
-                    while (fl)
-                    {
-                        RandomSalt(message1);
-                        RandomSalt(message2);
-                        hash1 = sha.ComputeHash(message1);
-                        hash2 = sha.ComputeHash(message2);
-
-                        for (int j = 0; j < BytesToSave; j++)
-                        {
-                            firstHashes[cycleCount][j] = hash1[j];
-                            secondHashes[cycleCount][j] = hash2[j];
-                        }
-
-                        cycleCount++;
-                        //Task<bool> taskObj = Task.Run<bool>(() => MyTask(cycleCount, i, hash1, secondHashes));
-                        Task<bool> task1 = taskFactory.StartNew(() => MyTask(0, cycleCount / 2, i, hash1, secondHashes));
-                        Task<bool> task2 = taskFactory.StartNew(() => MyTask(0, cycleCount / 2, i, hash2, firstHashes));
-                        Task<bool> task3 = taskFactory.StartNew(() => MyTask(cycleCount / 2, cycleCount, i, hash1, secondHashes));
-                        Task<bool> task4 = taskFactory.StartNew(() => MyTask(cycleCount / 2, cycleCount, i, hash2, firstHashes));
-                        if (task1.Result || task2.Result || task3.Result || task4.Result)
-                            break;
-                        //for (int j = 0; j < cycleCount; j++)
-                        //{
-                        //    fl = CompareHashes(i, hash1, secondHashes[j]) && CompareHashes(i, hash2, firstHashes[j]);
-                        //    if (!fl)
-                        //        break;
-                        //}
-
-                    }
-
-                    Console.WriteLine($"{i} bit: {cycleCount} cycles");
-                }
-            }
+            return result;
         }
 
-        static bool MyTask(int start, int end, int numberOfBits, byte[] hash, byte[][] previousHashes)
+        // Returns false if hashes are equal
+        static bool CompareBytes(List<byte> bytesToCompare, byte hashByte, int amountOfBits, int amountOfBytes)
         {
-            for (int j = start; j < end; j++)
+            for (int j = 0; j < bytesToCompare.Count; j++)
             {
-                if (CompareHashes(numberOfBits, hash, previousHashes[j]) == false)
-                    return true;
+                int k = 0;
+                for (; k < amountOfBits; k++)
+                {
+                    if ((bytesToCompare[j] & bits[k]) != (hashByte & bits[k]))
+                    {
+                        break;
+                    }
+                }
+                if (k == amountOfBits)
+                {
+                    return false;
+                }
             }
-            return false;
+
+            bytesToCompare.Add(hashByte);
+            return true;
         }
     }
 }
