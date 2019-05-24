@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace SHA1_Collisions
 {
@@ -15,17 +16,6 @@ namespace SHA1_Collisions
 
         // For comparing bits
         private static byte[] bits = { 1, 2, 4, 8, 16, 32, 64, 128 };
-
-        /*
-        static void RandomSalt(byte[] msg)
-        {
-            random.NextBytes(salt);
-            for (int i = 66; i < MessageLength; i++)
-            {
-                msg[i] = (byte)((int)salt[i - 66] % 10 + 48);
-            }
-        }
-        */
 
         static void Main(string[] args)
         {
@@ -43,6 +33,9 @@ namespace SHA1_Collisions
 
             CustomSHA1 customSHA1 = new CustomSHA1();
             //using (SHA1Cng sha = new SHA1Cng())
+
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
 
             Console.WriteLine("-----First preimage resistance:-----");
 
@@ -179,6 +172,8 @@ namespace SHA1_Collisions
                 dctSecondHashes.Clear();
 
             }
+            stopwatch.Stop();
+            Console.WriteLine($"\nExecution time: {stopwatch.Elapsed}");
         }
 
         static void RandomSalt(byte[] msg)

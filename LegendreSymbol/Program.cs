@@ -12,7 +12,7 @@ namespace LegendreSymbol
         static void Main(string[] args)
         {
             StringBuilder sb = new StringBuilder(TextLength);
-            Regex r = new Regex(@"L\(([0-9]+),([0-9]+)\)");
+            Regex r = new Regex(@"L\(([0-9]+),([0-9]+)\)", RegexOptions.Compiled);
 
             using (StreamWriter sw = new StreamWriter("legendre.txt", false))
             using (StreamReader sr = new StreamReader(args[0]))

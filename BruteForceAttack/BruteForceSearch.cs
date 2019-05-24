@@ -75,7 +75,7 @@ namespace BruteForceAttack
         {
             string line;
             // Read base file
-            using (StreamReader sr = new StreamReader(fileName, Encoding.GetEncoding("Windows-1251")))
+            using (StreamReader sr = new StreamReader(fileName, Encoding.Default))
                 while ((line = sr.ReadLine()) != null)
                 {
                     for (int i = 0; i < line.Length - 1; i++)
@@ -101,7 +101,7 @@ namespace BruteForceAttack
                 }
             }
             // Write bigram frequency to CSV file
-            using (StreamWriter sw = new StreamWriter(CSVFileName, false, Encoding.GetEncoding("Windows-1251")))
+            using (StreamWriter sw = new StreamWriter(CSVFileName, false, Encoding.Default))
             {
                 sw.WriteLine("," + string.Join(",", _alphabet));
                 foreach (char key in _alphabet)
@@ -112,12 +112,12 @@ namespace BruteForceAttack
             }
 
         }
-        // TODO: may be method name is incorrect
+        
         public void AnalyzeEncryptedFile(string fileName)
         {
             string line;
 
-            using (StreamReader sr = new StreamReader(fileName, Encoding.GetEncoding("Windows-1251")))
+            using (StreamReader sr = new StreamReader(fileName, Encoding.Default))
                 while ((line = sr.ReadLine()) != null)
                 {
                     _encryptedText.Add(line);
@@ -147,8 +147,6 @@ namespace BruteForceAttack
                         {
                             for (int i = 0; i < line.Length - 1; i++)
                             {
-                                //char x1 = listAlphabet[(listAlphabet.IndexOf(line[i]) + cipher[i % 3]) % sizeOfAlphabet];
-                                //char x2 = listAlphabet[(listAlphabet.IndexOf(line[i+1]) + cipher[(i + 1) % 3]) % sizeOfAlphabet];
                                 char x1 = _indexToSymbol[(_symbolToIndex[line[i]] + cipher[i % 3]) % sizeOfAlphabet];
                                 char x2 = _indexToSymbol[(_symbolToIndex[line[i + 1]] + cipher[(i + 1) % 3]) % sizeOfAlphabet];
                                 p += _baseBigramTable[x1][x2];

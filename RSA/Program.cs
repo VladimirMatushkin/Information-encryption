@@ -5,6 +5,8 @@ using System.Text.RegularExpressions;
 
 namespace RSA
 {
+    // Message encrypted by RSA
+    // Message blocks by 3 characters, Russian text inside)
     class Program
     {
         static Random random = new Random();
@@ -52,29 +54,29 @@ namespace RSA
             }
         }
 
-        static long InverseModulo(long a, long m)
+        static long InverseModulo(long a, long mod)
         {
             long x, y;
-            long d = ExtendedGCD(a, m, out x, out y);
+            long d = ExtendedGCD(a, mod, out x, out y);
 
-            if (d == 1) //return x;
-                return (x % m + m) % m;
+            if (d == 1) 
+                return (x % mod + mod) % mod;
             return 0;
         }
 
-        static long ModularPower(long a, long p, long n)
+        static long ModularPower(long a, long p, long mod)
         {
             long res = 1;
 
-            a %= n;
+            a %= mod;
 
             while (p > 0)
             {
                 if ((p & 1) == 1)
-                    res = (res * a) % n;
+                    res = (res * a) % mod;
 
                 p >>= 1;
-                a = (a * a) % n;
+                a = (a * a) % mod;
             }
             return res;
         }

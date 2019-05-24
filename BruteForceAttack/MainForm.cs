@@ -13,7 +13,7 @@ namespace BruteForceAttack
         }
 
         private OpenFileDialog openFileDialog = new OpenFileDialog();
-        private BruteForceSearch bfs = new BruteForceSearch("АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ ");
+        private BruteForceSearch bfs = new BruteForceSearch(" АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ");
 
         private void BtnOpenBaseFile_Click(object sender, EventArgs e)
         {

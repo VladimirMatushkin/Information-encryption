@@ -5,14 +5,14 @@ namespace PrimalityTests
 {
     class Program
     {
-        const int AmountOfNumbers = 100000;
+        const int AmountOfNumbers = 10000000;
         const int Base1 = 5;
-        const int Base2 = 7;
+        const int Base2 = 3;
 
         static void Main(string[] args)
         {
             // 1115913987
-            Random random = new Random();
+            Random random = new Random(1115913987);
             Stopwatch stopwatch = new Stopwatch();
             int[] numbers = new int[AmountOfNumbers];
             int[] digitsCount = new int[9];
@@ -39,9 +39,10 @@ namespace PrimalityTests
                 if (TrialDivision(numbers[i]))
                     trialDivision++;
             stopwatch.Stop();
-            Console.WriteLine("----------TrialDivision----------");
-            Console.WriteLine($"Time: {stopwatch.ElapsedMilliseconds}");
+            Console.WriteLine("------------------TrialDivision-------------------");
+            Console.WriteLine($"Time: {(double)stopwatch.ElapsedMilliseconds}ms");
             Console.WriteLine($"Prime numbers found: {trialDivision}");
+            Console.WriteLine("Average time: {0}ms", (double)stopwatch.ElapsedMilliseconds / AmountOfNumbers);
 
             // Fermat test with one base
             stopwatch.Restart();
@@ -49,10 +50,11 @@ namespace PrimalityTests
                 if (FermatTest(Base1, numbers[i]))
                     fermatTestOne++;
             stopwatch.Stop();
-            Console.WriteLine("------------Fermat test with one base------------");
-            Console.WriteLine($"Time: {stopwatch.ElapsedMilliseconds}");
+            Console.WriteLine("------------Fermat test with one base-------------");
+            Console.WriteLine($"Time: {(double)stopwatch.ElapsedMilliseconds}ms");
             Console.WriteLine($"Prime numbers found: {fermatTestOne}");
             Console.WriteLine("Error: {0}%", Math.Abs(fermatTestOne - trialDivision) / (double)trialDivision);
+            Console.WriteLine("Average time: {0}ms", (double)stopwatch.ElapsedMilliseconds / AmountOfNumbers);
 
             // Fermat test with two bases
             stopwatch.Restart();
@@ -61,9 +63,10 @@ namespace PrimalityTests
                     fermatTestTwo++;
             stopwatch.Stop();
             Console.WriteLine("------------Fermat test with two bases------------");
-            Console.WriteLine($"Time: {stopwatch.ElapsedMilliseconds}");
+            Console.WriteLine($"Time: {(double)stopwatch.ElapsedMilliseconds}ms");
             Console.WriteLine($"Prime numbers found: {fermatTestTwo}");
             Console.WriteLine("Error: {0}%", Math.Abs(fermatTestTwo - trialDivision) / (double)trialDivision);
+            Console.WriteLine("Average time: {0}ms", (double)stopwatch.ElapsedMilliseconds / AmountOfNumbers);
 
             // Miller–Rabin test with one base
             stopwatch.Restart();
@@ -71,10 +74,11 @@ namespace PrimalityTests
                 if (MillerRabinTest(Base1, numbers[i]))
                     millerRabinTestOne++;
             stopwatch.Stop();
-            Console.WriteLine("----------Miller–Rabin test with one base---------");
-            Console.WriteLine($"Time: {stopwatch.ElapsedMilliseconds}");
+            Console.WriteLine("----------Miller–Rabin test with one base---------ms");
+            Console.WriteLine($"Time: {(double)stopwatch.ElapsedMilliseconds}");
             Console.WriteLine($"Prime numbers found: {millerRabinTestOne}");
             Console.WriteLine("Error: {0}%", Math.Abs(millerRabinTestOne - trialDivision) / (double)trialDivision);
+            Console.WriteLine("Average time: {0}ms", (double)stopwatch.ElapsedMilliseconds / AmountOfNumbers);
 
             // Miller–Rabin test with two bases
             stopwatch.Restart();
@@ -82,10 +86,11 @@ namespace PrimalityTests
                 if (MillerRabinTest(Base1, numbers[i]) && MillerRabinTest(Base2, numbers[i]))
                     millerRabinTestTwo++;
             stopwatch.Stop();
-            Console.WriteLine("----------Miller–Rabin test with one base---------");
-            Console.WriteLine($"Time: {stopwatch.ElapsedMilliseconds}");
+            Console.WriteLine("----------Miller–Rabin test with two bases--------");
+            Console.WriteLine($"Time: {(double)stopwatch.ElapsedMilliseconds}ms");
             Console.WriteLine($"Prime numbers found: {millerRabinTestTwo}");
             Console.WriteLine("Error: {0}%", Math.Abs(millerRabinTestTwo - trialDivision) / (double)trialDivision);
+            Console.WriteLine("Average time: {0}ms", (double)stopwatch.ElapsedMilliseconds / AmountOfNumbers);
         }
 
         static int CountDigit(int n)

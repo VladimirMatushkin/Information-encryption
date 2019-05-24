@@ -23,41 +23,26 @@ namespace Rabin
 
                 long yp, yq;
                 ExtendedGCD(p, q, out yp, out yq);
-                Console.WriteLine($"yp = {yp}\r\nyq = {yq}");
 
                 sr.ReadLine();
 
                 using (StreamWriter sw = new StreamWriter("decrypted.txt", false, Encoding.GetEncoding("Windows-1251")))
                 {
                     sw.WriteLine($"p = {p}\r\nq = {q}");
-                    sw.WriteLine($"yp = {yp}\r\nyq = {yq}");
+                    //sw.WriteLine($"yp = {yp}\r\nyq = {yq}");
 
                     long encryptedMessage;
                     long[] M = new long[4];
-
-                    // In Rabin system we have four different decrypted messages from one encrypted,
-                    // only one of them if correct
-                    //byte[][] decryptedVariants = new byte[M.Length][];
-                    //for (int i = 0; i < M.Length; i++)
-                        //decryptedVariants[i] = new byte[1000];
                     byte[] decryptedMessage = new byte[1000];
 
                     int messageLength = 0;
-                    foreach (string number in Regex.Split(sr.ReadToEnd(), "[ \r\n]+", RegexOptions.Compiled))
+                    foreach (string number in Regex.Split(sr.ReadToEnd(), "[ \r\n]+"))
                         if (long.TryParse(number, out encryptedMessage))
                         {
                             //long C = ModularPower(M, d, n);
                             long mp = encryptedMessage % p;
                             long mq = encryptedMessage % q;
-                            M = decrypt(encryptedMessage, p, q);
-                            //Console.WriteLine(mp + " " + mq);
-                            //M[0] = Mod((yp * p * mq + yq * q * mp), n);
-                            //M[1] = n - M[0];
-                            //M[2] = Mod((yp * p * mq - yq * q * mp), n);
-                            //M[3] = n - M[2];
-                            //for (int i = 0; i < 4; i++)
-                            //  Console.Write(M[i] + " ");
-                            //Console.WriteLine();
+                            M = Decrypt(encryptedMessage, p, q);
 
                             for (int i = 0; i < M.Length; i++)
                             {
@@ -79,48 +64,16 @@ namespace Rabin
                                         }
                                     }
                                 }
-
-                                /*if (c == 32 || (c >= 192 && c <= 223))
-                                {
-                                    Console.WriteLine(c);
-                                    decryptedMessage[messageLength++] = c;
-                                    M[i] >>= 8;
-                                    decryptedMessage[messageLength++] = (byte)(M[i] & 255);
-                                    M[i] >>= 8;
-                                    decryptedMessage[messageLength++] = (byte)(M[i] & 255);
-                                    break;
-                                }*/
                             }
-
-                            /*for (int i = 0; i < M.Length; i++)
-                            {
-                                //long C = ModularPower(M[i], 2, n);
-                                for (int j = 2; j >= 0; j--)
-                                {
-                                    //decryptedVariants[i][messageLength + j] = (byte)(C & 255);
-                                    //C >>= 8;
-                                    decryptedVariants[i][messageLength + j] = (byte)(M[i] & 255);
-                                    M[i] >>= 8;
-                                    
-                                }
-                            }
-                            messageLength += 3;*/
                         }
 
                     sw.WriteLine("Decrypted message");
-                    for (int i = 0; i < M.Length; i++)
-                    {
-                        sw.WriteLine($"\r\n\tVariant{i + 1}");
-                        //sw.WriteLine(ASCIIEncoding.Default.GetString(decryptedVariants[i], 0, messageLength));
-                        sw.WriteLine(ASCIIEncoding.Default.GetString(decryptedMessage, 0, messageLength));
-                        //for (int j = 0; j < messageLength; j++)
-                            //sw.Write(decryptedVariants[i][j] + " ");
-                    }
+                    sw.WriteLine(ASCIIEncoding.Default.GetString(decryptedMessage, 0, messageLength));
                 }
             }
         }
 
-        public static long[] decrypt(long c, long p, long q)
+        public static long[] Decrypt(long c, long p, long q)
         {
             long N = p * q;
             long m_p1 = ModularPower(c, (p + 1) / 4, p);
@@ -146,19 +99,19 @@ namespace Rabin
             return (x % m + m) % m;
         }
 
-        static long ModularPower(long a, long p, long n)
+        static long ModularPower(long a, long p, long mod)
         {
             long res = 1;
 
-            a %= n;
+            a %= mod;
 
             while (p > 0)
             {
                 if ((p & 1) == 1)
-                    res = (res * a) % n;
+                    res = (res * a) % mod;
 
                 p >>= 1;
-                a = (a * a) % n;
+                a = (a * a) % mod;
             }
             return res;
         }
