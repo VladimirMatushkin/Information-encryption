@@ -29,8 +29,8 @@ namespace Steganography
             
             Console.Write("Specify delimiter in csv file: ");
             string delimiter = Char.ConvertFromUtf32(Console.Read());
-            string header = string.Join(delimiter, "File name", "Resolution", "Size of embeddeded information(bits)",
-                                        "Size of base image(bits)", "% of embeddeded information");
+            string header = string.Join(delimiter, "File name", "Resolution", "Size of embedded information(bits)",
+                                        "Size of base image(bits)", "% of embedded information");
 
             using (FileSystemWatcher watcher = new FileSystemWatcher(PathToImages, "*.jpg"))
             using(StreamWriter sw = new StreamWriter("result.csv", false, Encoding.UTF8))
